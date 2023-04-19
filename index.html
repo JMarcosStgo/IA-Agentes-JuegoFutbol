@@ -14,13 +14,13 @@
 	<main>
 		<div class="interfaz">
 			<div class="pantallAFondo">
-				<canvas width="640" height="426" ></canvas>
+				<canvas width="640" height="426" style="border: 25px solid #0aa028;"></canvas>
 			</div>
 			<div>
 				<div class="btnAjuste">
-					<button class="botones">Start</button>
+					<button class="botones" onclick="start()">Start</button>
 					<button class="botones">Resume</button>
-					<button class="botones">Stop</button>
+					<button class="botones" onclick="stopGame()">Stop</button>
 				</div>
 				<div class="scoreTime">
 					<p>Score: <label id="texto_nav1"></label></p>
