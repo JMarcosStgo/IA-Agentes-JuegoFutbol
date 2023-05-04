@@ -10,14 +10,15 @@ let golesTeam1 = 0
 let golesTeam2 = 0
 let goles = "---"
 let idItervalo = 0;
+let idItervalo2 = 0;
 let pausado = true
 let y = 200;
 let x = 310;
 let controlY = 1;
 let controlX = 1;
-let velocidad = 20;
+let velocidad = 10;
 let seconds = 0;
-let minutos = 0;
+let minutos = 4;
 let tiempo = "00:00";
 
 function dibujarCanvas() {
@@ -39,7 +40,7 @@ function dibujarBalon(x, y) {
 
 function dibujarCampo() {
     let image = new Image();
-    image.src = "campoF.jpg";
+    image.src = "campoF2.jpg";
     image.onload = function () {
         pincel.drawImage(image, 0, 0);
     };
@@ -86,8 +87,8 @@ function evaluaPorteros(team) {
         if (dataDefensas.length == 1) {
             break;
         }
-        if (team == 1) {
-            if (data[0] >= 25 && data[0] <= ancho / 12 && data[1] >= ((alto / 3.8)) && data[1] <= (alto / 2)) {
+        if (team == 1) { //80 - 220 25 -50
+            if (data[0] >= 25 && data[0] <= 50 && data[1] >= 130 && data[1] <= 220) {
                 dataDefensas.push(data)
                 dataPlayers1[con] = data
                 con += 1
@@ -95,7 +96,7 @@ function evaluaPorteros(team) {
             }
         }
         else {
-            if (data[0] >= (ancho - (ancho / 10)) && data[0] <= (ancho - 35) && data[1] >= ((alto / 3.8)) && data[1] <= (alto / 2)) {
+            if (data[0] >= 580 && data[0] <= 600 && data[1] >= 130 && data[1] <= 220) {
                 dataDefensas.push(data)
                 dataPlayers2[con] = data
                 con += 1
@@ -229,34 +230,20 @@ function balonRebote() {
         controlX = 0;
         x = (ancho - 50);
     }
-    //avance +x y
 
-    /*
-    if (colisionBalon(x, y) == true) {
-        //el balon debe rebotar 
-        console.log("colisiono", x, y)
-        console.log(dataPlayers1, dataPlayers2)
-        controlX = 1 //1-0 0-1 0-0 1-1
-        controlY = 0
-    }
-    */
     xBal = x
     yBal = y
     for (let index = 0; index < dataPlayers1.length; index++) {
         const element1 = dataPlayers1[index];
         const element2 = dataPlayers2[index];
-        //caso en que rebota en un jugador
-        //if    x >= xbal-32 and x<=xball que esde dentro un rango mono = 17x64 balon 32x32 
         //equipo blue
-        if (element1[0] >= xBal - 17 && element1[0] <= xBal + 17 && element1[1] >= yBal - 32 && element1[1] <= yBal + 32) {// element2[1] == xBal && element2[1] == yBal) {
-            console.log("colision entra if 1")
+        if (element1[0] >= xBal - 13 && element1[0] <= xBal + 13 && element1[1] >= yBal - 16 && element1[1] <= yBal + 16) {// element2[1] == xBal && element2[1] == yBal) {
             controlX = 2
             controlY = 2
             break
         }
         //equipo black
-        if (element2[0] >= xBal - 17 && element2[0] <= xBal + 17 && element2[1] >= yBal - 32 && element2[1] <= yBal + 32) {
-            console.log("colision entra if 2")
+        if (element2[0] >= xBal - 13 && element2[0] <= xBal + 13 && element2[1] >= yBal - 16 && element2[1] <= yBal + 16) {
             controlY = 4
             controlX = 4
 
@@ -266,29 +253,38 @@ function balonRebote() {
 }
 
 function gol() {
+    //console.log("puntos del balon " + x + " : " + y)
     let gol = false
     //goles team1
-    if (x == 33 && y >= 185 && y <= 225) {
-        console.log("Gooooooooooooooooool 1")
+    if (x <= 30 && y >= 155 && y <= 250) {// x == 33 && y >= 185 && y <= 225) { //30,155-250
+        //console.log("Gooooooooooooooooool 1")
         golesTeam1 += 1
         //cada gol se recolocan los jugadores
-        escribirScore()
-        stopGame()
+        //escribirScore()
+        //stopGame()
+        clearInterval(idItervalo)
+        dibujarCanvas()
+        mostrarGool("Gooooooooooool")
         setTimeout(function () {
+            mostrarGool(" ")
             InitGame()
-            idItervalo = setInterval(main, 250)
+            idItervalo = setInterval(main, 350)
             gol = true
         }, 2000);
     }
     //goles team2 595 190 220
-    if (x == ancho - 47 && y >= 185 && y <= 225) {
-        console.log("Gooooooooooooooooool 2")
+    if (x >= ancho - 50 && y >= 155 && y <= 250) {
+        //console.log("Gooooooooooooooooool 2")
         golesTeam2 += 1
-        escribirScore()
-        stopGame()
+        clearInterval(idItervalo)
+        dibujarCanvas()
+        mostrarGool("Gooooooooooool")
+        //escribirScore()
+        //stopGame()
         setTimeout(function () {
+            mostrarGool(" ")
             InitGame()
-            idItervalo = setInterval(main, 250)
+            idItervalo = setInterval(main, 350)
             gol = true
         }, 2000);
     }
@@ -299,6 +295,12 @@ function escribirScore() {
     let score = goles;
     let objetivo = document.getElementById("texto_nav1");
     objetivo.innerHTML = score;
+}
+
+
+function mostrarGool(goolText) {
+    let objetivo = document.getElementById("gool");
+    objetivo.innerHTML = goolText;
 }
 
 function escribirTiempo() {
@@ -312,9 +314,9 @@ function escribirTiempo() {
 let ciclos = 0
 function main() {
     dibujarJugadoresEquipo(1, 2);
-    balonRebote()
     gol()
-    if (ciclos == 4) {
+    balonRebote()
+    if (ciclos == 3) {
         seconds += 1
         ciclos = 0
     }
@@ -325,17 +327,25 @@ function main() {
     }
     escribirScore();
     escribirTiempo();
+    //despues de 5 minutos de juego se debe terminar el juego
+    if (minutos == 5 && seconds == 0) {
+        stopGame()
+    }
 
 }
 
 //funcion de inicio del juego
 var conStart = 0
 function start() {
+    //console.log("idIntervalo ", idItervalo)
     stopGame()
     InitGame()
-    clearInterval(idItervalo)
+    if (idItervalo != 0)
+        clearInterval(idItervalo)
     conStart++
-    idItervalo = setInterval(main, 250)
+    //    clearInterval(idItervalo) //limpiar constantemente la pila para que se ejecute correctament setInterval
+    idItervalo = setInterval(main, 350)
+   
 }
 
 //funcion para pausar el juego
@@ -353,15 +363,15 @@ function ResumeGame() {
         dibujarCanvas()
         dibujarCampo()
         pausado = true
-        idItervalo = setInterval(main, 250)
+        idItervalo = setInterval(main, 350)
     }
-
 
 }
 
 //funcion para detener el juego
 function stopGame() {
-    clearInterval(idItervalo)
+    if (idItervalo != 0)
+        clearInterval(idItervalo)
     dibujarCanvas()
     InitGame()
     goles = "Brown: " + 0 + " Blue :" + 0
@@ -390,3 +400,4 @@ function InitGame() {
 //carga el canvas y los jugadores
 dibujarCanvas()
 InitGame()
+dibujarBalon(310, 200)
